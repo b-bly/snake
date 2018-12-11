@@ -7,7 +7,12 @@ import Square from '../Game/square'
 export default class Game extends Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      playerPosition: {
+        top: 0,
+        left: 0
+      }
+    }
   }
 
 
@@ -15,6 +20,9 @@ export default class Game extends Component {
    
     return (
       <div>
+        <SnakeHead 
+          {...this.state.playerPosition}
+        />
         <Board />
        
       </div>

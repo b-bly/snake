@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { RED, UP, DOWN, LEFT, RIGHT, X_OFFSET, Y_OFFSET, BORDERWIDTH } from '../helpers/constants'
+import { RED, UP, DOWN, LEFT, RIGHT, X_VALUES_INSIDE, Y_VALUES_INSIDE } from '../helpers/constants'
 
 import Square from './square'
 
@@ -32,15 +32,20 @@ class SnakeHead extends Component {
     this.props.handlePlayerMovement(newDirection, this.props.playerPosition.bodyIndex);
   }
   render() {
-    const { playerPosition: { top, left } } = this.props
+    console.log("props")
+    console.log(this.props);
+    
+    const { top, left } = this.props
+    const topPixels = Y_VALUES_INSIDE[top]
+    const leftPixels = X_VALUES_INSIDE[left]
   
     return (
       <Fragment>
         <Square
           backgroundColor={RED}
           zIndex={'2'}
-          top={top }
-          left={left }
+          top={topPixels }
+          left={leftPixels }
           border={false}
         />
       </Fragment>
