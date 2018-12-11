@@ -14,10 +14,10 @@ export const TOTAL_CELL_WIDTH = CELLWIDTH + BORDERWIDTH * 2;
 export const Y_OFFSET = 100 // distance from top of window to top of board
 export const X_OFFSET = 50
 export const X_VALUES_INSIDE = Array(CELLSIZE).fill('').map((el, i, arr) => {
-  return i * CELLWIDTH + X_OFFSET + BORDERWIDTH * (i+1);
+  return i * CELLWIDTH + X_OFFSET + BORDERWIDTH;
 });
 export const Y_VALUES_INSIDE = Array(CELLSIZE).fill('').map((el, i, arr) => {
-  return i * CELLHEIGHT + Y_OFFSET + BORDERWIDTH * (i+1);
+  return i * CELLHEIGHT + Y_OFFSET + BORDERWIDTH;
 });
 export const X_VALUES_OUTSIDE = Array(CELLSIZE).fill('').map((el, i, arr) => {
   return i * CELLWIDTH + X_OFFSET;

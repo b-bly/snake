@@ -25,6 +25,7 @@ class SnakeHead extends Component {
       case 40:
         newDirection = DOWN;
         break;
+
       default:
         return;
     }
@@ -32,9 +33,6 @@ class SnakeHead extends Component {
     this.props.handlePlayerMovement(newDirection, this.props.playerPosition.bodyIndex);
   }
   render() {
-    console.log("props")
-    console.log(this.props);
-    
     const { top, left } = this.props
     const topPixels = Y_VALUES_INSIDE[top]
     const leftPixels = X_VALUES_INSIDE[left]
