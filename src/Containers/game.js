@@ -50,13 +50,46 @@ export default class Game extends Component {
     })
   }
 
+  handlePlayerMovement = (newDirection) => {
+    const { playerPosition: updatedPlayerPosition } = this.state
+    updatedPlayerPosition.direction = newDirection
+    this.setState({
+      playerPosition: updatedPlayerPosition
+    })
+  }
+
   pause = () => {
     window.clearInterval(this.playerInterval)
   }
 
-  handleKeyDown = (e) => {    
+  handleKeyDown = (e) => {
     if (e.keyCode === 80) { // p
       this.pause()
+    }
+
+    let newDirection;
+    switch (e.keyCode) {
+      case 37:
+        newDirection = constants.LEFT;
+        break;
+      case 38:
+        newDirection = constants.UP
+        break;
+      case 39:
+        newDirection = constants.RIGHT;
+        break;
+      case 40:
+        newDirection = constants.DOWN;
+        break;
+
+      default:
+        return;
+    }
+
+    const direction = this.props.direction;
+    if (direction !== newDirection &&
+      constants.OPPOSITE_DIRECTIONS[direction] !== newDirection) {
+      this.handlePlayerMovement(newDirection);
     }
   }
 
@@ -66,6 +99,8 @@ export default class Game extends Component {
         <SnakeHead
           top={Math.floor(this.state.playerPosition.top)}
           left={Math.floor(this.state.playerPosition.left)}
+          direction={this.state.playerPosition.direction}
+          handlePlayerMovement={this.handlePlayerMovement.bind(this)}
         />
         <Board />
 

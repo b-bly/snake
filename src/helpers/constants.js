@@ -51,3 +51,9 @@ export const RIGHT = 'RIGHT'
 
 export const HEAD = 0
 
+export const OPPOSITE_DIRECTIONS = {
+  UP: DOWN,
+  DOWN: UP,
+  LEFT: RIGHT,
+  RIGHT: LEFT,
+}
