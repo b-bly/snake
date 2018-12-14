@@ -1,11 +1,10 @@
 import React from 'react'
 import * as constants from '../helpers/constants'
 import Square from './square'
-import { relative } from 'path';
 
 
 
-const Board = (props) => {
+const Board = () => {
   const board = Array(constants.CELLSIZE).fill('').map((el, i, arr) => {
     return (
       // <div key={i.toString()} style={{

@@ -25,6 +25,10 @@ export const X_VALUES_OUTSIDE = Array(CELLSIZE).fill('').map((el, i, arr) => {
 export const Y_VALUES_OUTSIDE = Array(CELLSIZE).fill('').map((el, i, arr) => {
   return i * CELLHEIGHT + Y_OFFSET;
 });
+export const INDICES = Array(CELLSIZE).fill('').map((_, i) => {
+  return i
+})
+
 
 
 export const WHITE = 'rgb(255, 255, 255)'
