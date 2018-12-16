@@ -1,13 +1,12 @@
 
-export const FPS = 5
+export const FPS = 4
 export const INTERVAL = 1000 / FPS // how often game is updated in ms
 export const WINDOWWIDTH = 640
 export const WINDOWHEIGHT = 640 // pixels
 export const CELLSIZE = 20  // number squares on board.  Should be called board size?
+export const CELLSIZE100 = CELLSIZE * 100
 export const CELLWIDTH = parseInt(WINDOWWIDTH / CELLSIZE) // width in pixels of board cell
 export const CELLHEIGHT = parseInt(WINDOWHEIGHT / CELLSIZE)
-export const PLAYERWIDTH = CELLWIDTH
-export const PLAYERHEIGHT = CELLHEIGHT
 export const BORDERWIDTH = 2
 export const TOTAL_CELL_HEIGHT = CELLHEIGHT + BORDERWIDTH * 2;
 export const TOTAL_CELL_WIDTH = CELLWIDTH + BORDERWIDTH * 2;
@@ -27,6 +26,9 @@ export const Y_VALUES_OUTSIDE = Array(CELLSIZE).fill('').map((el, i, arr) => {
 });
 export const INDICES = Array(CELLSIZE).fill('').map((_, i) => {
   return i
+})
+export const INDICES100 = Array(CELLSIZE).fill('').map((_, i) => {
+  return i*100
 })
 
 

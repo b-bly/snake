@@ -9,16 +9,10 @@ export default class Game extends Component {
   constructor() {
     super()
     this.state = {
-      // playerPosition: {
-      //   top: 0,
-      //   left: 0,
-      //   direction: constants.RIGHT,
-      // },
       playerState: [
         { // first item is the head
-
-          top: constants.INDICES[0],
-          left: constants.INDICES[5],
+          top: constants.INDICES100[0],
+          left: constants.INDICES100[5],
           direction: constants.RIGHT,
           bodyIndex: 0,
           turning: [] // direction, threshold
@@ -26,21 +20,22 @@ export default class Game extends Component {
         // 2nd body piece for testing
         { // second piece (body)
 
-          top: constants.INDICES[0],
-          left: constants.INDICES[4],
+          top: constants.INDICES100[0],
+          left: constants.INDICES100[4],
           direction: constants.RIGHT,
           bodyIndex: 1,
           turning: []
         },
         {
-          top: constants.INDICES[0],
-          left: constants.INDICES[3],
+          top: constants.INDICES100[0],
+          left: constants.INDICES100[3],
           direction: constants.RIGHT,
           bodyIndex: 2,
           turning: []
         }
       ],
-      playerSpeed: .1,
+      playerSpeed: 20,
+      paused: false,
     }
   }
 
@@ -63,36 +58,19 @@ export default class Game extends Component {
 
     let playerState = [...this.state.playerState].map((piece, i) => {
       if (piece.turning.length > 0) {
-
+        console.log('turning');
+        
         let { direction: currentDirection } = piece
         const { threshold, direction: turningDirection } = piece.turning[0]
-
-        console.log(piece.top);
-        
         const { top, left } = piece
-        // passed turning threshold?
-        function adjustOvershot(piece, overshotDistance) {
-          switch (piece.direction) {
-            case constants.UP:
-              piece.top -= overshotDistance
-              break
-            case constants.RIGHT:
-              piece.left += overshotDistance
-              break
-            case constants.DOWN:
-              piece.top += overshotDistance
-              break
-            case constants.LEFT:
-              piece.left -= overshotDistance
-              break
-            default:
-              break
-          }
-          return piece
-        }
         switch (currentDirection) {
           case constants.UP:
-            if (top <= threshold + playerSpeed) {
+            // passed turning threshold?
+                        //threshold = 0
+            // top = 10
+            // speed = 20
+            // next move top = -10
+            if (top - playerSpeed <= threshold) {
               console.log('up');
               // if threshold exceeded,
               // reassign currentDirection
@@ -100,117 +78,125 @@ export default class Game extends Component {
               const overshotDistance = (threshold + playerSpeed) - top
               // *** TO DO  ***
               // write a function to update top/left with overshotDistance + or - left (switch depending on turning direction)
-              piece = adjustOvershot(piece, overshotDistance) 
+              piece = this.movePlayer(piece, overshotDistance)
               // make sure player is turning in the row or column coords by setting the head to the threshold
               piece.top = threshold
               piece.turning.shift()
+            } else {
+              piece = this.movePlayer(piece, playerSpeed)
             }
             break
           case constants.RIGHT:
-
             if (left >= threshold - playerSpeed) {
               console.log('right');
-
               piece.direction = turningDirection
               const overshotDistance = left - (threshold - playerSpeed)
               piece.left = threshold
-              piece = adjustOvershot(piece, overshotDistance) 
+              piece = this.movePlayer(piece, overshotDistance)
+              console.log(piece.turning[0]);
               piece.turning.shift()
-             console.log(piece);
-             console.log(piece.top);
-             
-             
+            } else {
+              piece = this.movePlayer(piece, playerSpeed)
             }
             break
+
           case constants.DOWN:
-            if (top >= threshold - playerSpeed) {
+            if (top + playerSpeed >= threshold) {
               console.log('down');
 
               piece.direction = turningDirection
-              const overshotDistance = top - (threshold + playerSpeed)
+              const overshotDistance = top - (threshold - playerSpeed)
               piece.top = threshold;
-              piece = adjustOvershot(piece, overshotDistance) 
+              piece = this.movePlayer(piece, overshotDistance)
               piece.turning.shift()
+            } else {
+              piece = this.movePlayer(piece, playerSpeed)
             }
             break;
           case constants.LEFT:
-
-            if (left <= threshold + playerSpeed) {
+            // left = 110
+            // threshold = 100
+            // next move left = 90
+            // is left - speed <= threshold
+            if (left - playerSpeed <= threshold) {
               console.log('left');
 
               piece.direction = turningDirection
               const overshotDistance = (threshold + playerSpeed) - left
               piece.left = threshold;
-              piece = adjustOvershot(piece, overshotDistance) 
+              piece = this.movePlayer(piece, overshotDistance)
               piece.turning.shift()
+            } else {
+              piece = this.movePlayer(piece, playerSpeed)
             }
             break;
           default:
             break
         }
-        // function turn(overshotDistance) {
-        //   playerSpeed += overshotDistance
-
-        // }
+      } else {
+        piece = this.movePlayer(piece, playerSpeed)
       }
       return piece
     })
-    if (playerState[0].top < 0) console.log(playerState[0].top);
     const updatedPlayerState = playerState.map((bodyPiece) => {
       const { direction: playerDirection } = bodyPiece
-      let { top, left } = bodyPiece
 
+      // bodyPiece = this.movePlayer(bodyPiece, playerSpeed)
 
-      switch (playerDirection) {
-
-        case constants.UP:
-          // wait until next column.  Worm can only go in the columns/rows
-          top -= playerSpeed
-          break
-        case constants.RIGHT:
-          left += playerSpeed
-          break
-        case constants.DOWN:
-          top += playerSpeed
-          break
-        case constants.LEFT:
-          left -= playerSpeed
-          break
-        default:
-          break
-      }
-
-      // check walls
-      switch (playerDirection) {
-        case constants.UP:
-          if (top < 0) top = 0;
-          break
-        case constants.DOWN:
-          if (top > constants.CELLSIZE - 1) top = constants.CELLSIZE - 1;
-          break
-        case constants.LEFT:
-          if (left < 0) left = 0;
-          break
-        case constants.RIGHT:
-          if (left > constants.CELLSIZE - 1) left = constants.CELLSIZE - 1;
-          break
-        default:
-          break
-      }
-      bodyPiece.top = top
-      bodyPiece.left = left
       return bodyPiece
     })
     this.setState({
-      playerState: updatedPlayerState
+      playerState: playerState
     })
+  }
+
+  movePlayer = (bodyPiece, playerSpeed) => {
+    const { direction: playerDirection } = bodyPiece
+    const { top, left } = bodyPiece
+    switch (playerDirection) {
+
+      case constants.UP:
+        // wait until next column.  Worm can only go in the columns/rows
+        bodyPiece.top -= playerSpeed
+        break
+      case constants.RIGHT:
+        bodyPiece.left += playerSpeed
+        break
+      case constants.DOWN:
+        bodyPiece.top += playerSpeed
+        break
+      case constants.LEFT:
+        bodyPiece.left -= playerSpeed
+        break
+      default:
+        break
+    }
+    // check walls
+    switch (playerDirection) {
+      case constants.UP:
+        if (top < 0) bodyPiece.top = 0;
+        break
+      case constants.DOWN:
+        if (top > constants.CELLSIZE100 - 1) bodyPiece.top = constants.CELLSIZE100 - 1;
+        break
+      case constants.LEFT:
+        if (left < 0) bodyPiece.left = 0;
+        break
+      case constants.RIGHT:
+        if (left > constants.CELLSIZE100 - 1) bodyPiece.left = constants.CELLSIZE100 - 1;
+        break
+      default:
+        break
+    }
+    return bodyPiece
   }
 
   handlePlayerMovement = (newDirection) => {
     const { playerState } = this.state
+    const turnObjectInHeadBool = playerState[0].turning.length > 0
     const updatedPlayerState = [...this.state.playerState].map((piece, i) => {
       // player changed their mind, replace turn direction
-      if (playerState[0].turning.length > 0) {
+      if (turnObjectInHeadBool) {
         piece.turning.pop()
       }
       // Add turn to the queue
@@ -234,17 +220,21 @@ export default class Game extends Component {
     switch (playerDirection) {
       case constants.UP:
         // looping from small to large values of y
-        threshold = playerPosition.top - 1
+        // example:
+        // 247 - 47 = 200
+        threshold = (playerPosition.top - playerPosition.top % 100)
         break;
       case constants.DOWN:
-        threshold = playerPosition.top + 1
+        threshold = (playerPosition.top - playerPosition.top % 100) + 100
         break;
       case constants.LEFT:
         // highest x that is lower than position.left
-        threshold = playerPosition.left - 1
+        // left = 110
+        // threshold = 100
+        threshold = (playerPosition.left - playerPosition.left % 100)
         break;
       case constants.RIGHT:
-        threshold = playerPosition.left + 1
+        threshold = (playerPosition.left - playerPosition.left % 100) + 100
         break;
       default:
         break;
@@ -253,7 +243,13 @@ export default class Game extends Component {
   }
 
   pause = () => {
-    window.clearInterval(this.playerInterval)
+    if (this.state.paused === true) {
+      this.start()
+      this.setState({ paused: false })
+    } else {
+      window.clearInterval(this.playerInterval)
+      this.setState({ paused: true })
+    }
   }
 
   handleKeyDown = (e) => {
@@ -293,8 +289,8 @@ export default class Game extends Component {
     const snake = this.state.playerState.map((piece, i) =>
       <SnakePiece
         key={i.toString()}
-        top={Math.floor(piece.top)}
-        left={Math.floor(piece.left)}
+        top={piece.top}
+        left={piece.left}
         direction={piece.direction}
       />
     )
