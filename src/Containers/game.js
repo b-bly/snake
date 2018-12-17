@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Board from '../Game/board'
 import SnakePiece from '../Game/snake-piece'
+import Fruit from '../Game/fruit'
 // import SnakeBody from '../Game/snake-body'
 // import Square from '../Game/square'
 import * as constants from '../helpers/constants'
@@ -34,6 +35,11 @@ export default class Game extends Component {
           turning: []
         }
       ],
+      fruit: [{
+        top: constants.INDICES100[1],
+        left: constants.INDICES100[1],
+        timeStamp: 0,
+      }],
       playerSpeed: 20,
       paused: false,
     }
@@ -48,6 +54,36 @@ export default class Game extends Component {
     this.playerInterval = setInterval(() => {
       this.updatePlayerPosition();
     }, constants.INTERVAL);
+
+    // place fruit
+    this.placeFruit()
+  }
+
+  placeFruit = () => {
+    // place new fruit in random location--push to array
+    // Can't be in same location as other fruit or player
+    // buffer around player?
+
+    // loop through player locations and fruit and reassign if fruit top / left equal to these
+    const newFruit = this.checkOccupiedSquares();
+    const date = new Date()
+    newFruit.timeStamp = Date.UTC()
+    this.setState({
+      fruit: [ ...this.state.fruit, newFruit ]
+    })
+
+    // fruit disappears after random seconds between 10 and 20 sec
+  }
+  checkOccupiedSquares = () => {
+    const top = constants.INDICES100[Math.floor(Math.random() * constants.INDICES100.length)]
+    const left = constants.INDICES100[Math.floor(Math.random() * constants.INDICES100.length)]
+    const occupiedSquares = [ ...this.state.playerState, ...this.state.fruit ]
+    for (let i = 0; i < occupiedSquares.length; i++) {
+      const occupiedTop = occupiedSquares[i]
+      const occupiedLeft = occupiedSquares[i]
+      if (top === occupiedTop && left === occupiedLeft) return this.checkOccupiedSquares()
+    }
+    return {top: top, left: left}
   }
 
   updatePlayerPosition = () => {
@@ -93,7 +129,6 @@ export default class Game extends Component {
               const overshotDistance = left - (threshold - playerSpeed)
               piece.left = threshold
               piece = this.movePlayer(piece, overshotDistance)
-              console.log(piece.turning[0]);
               piece.turning.shift()
             } else {
               piece = this.movePlayer(piece, playerSpeed)
@@ -291,12 +326,20 @@ export default class Game extends Component {
         key={i.toString()}
         top={piece.top}
         left={piece.left}
-        direction={piece.direction}
       />
     )
+    const fruit = this.state.fruit.map((fruit, i) => 
+      <Fruit key={i.toString()}
+      top={fruit.top}
+      left={fruit.left}
+
+      />
+    )
+    
     return (
       <div>
         {snake}
+        {fruit}
         <Board />
 
       </div>

@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
-import { RED, X_VALUES_INSIDE, Y_VALUES_INSIDE, Y_OFFSET, TOTAL_CELL_HEIGHT, TOTAL_CELL_WIDTH, BORDERWIDTH} from '../helpers/constants'
+import { GREEN, X_VALUES_INSIDE, Y_VALUES_INSIDE, Y_OFFSET, TOTAL_CELL_HEIGHT, TOTAL_CELL_WIDTH, BORDERWIDTH} from '../helpers/constants'
 import Square from './square'
 
-const SnakePiece = (props) => {
+const Fruit = (props) => {
     const { top, left } = props
     const topPixels = Y_VALUES_INSIDE[Math.floor(top/100)] + ((TOTAL_CELL_HEIGHT) * (top%100)/100)
     const leftPixels = X_VALUES_INSIDE[Math.floor(left/100)] + ((TOTAL_CELL_WIDTH) * (left%100)/100)
@@ -11,8 +11,8 @@ const SnakePiece = (props) => {
     return (
       <Fragment>
         <Square
-          backgroundColor={RED}
-          zIndex={'2'}
+          backgroundColor={GREEN}
+          zIndex={'1'}
           top={topPixels}
           left={leftPixels}
           border={false}
@@ -21,4 +21,4 @@ const SnakePiece = (props) => {
     )
 }
 
-export default SnakePiece
+export default Fruit
