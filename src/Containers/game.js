@@ -5,45 +5,12 @@ import Fruit from '../Game/fruit'
 // import SnakeBody from '../Game/snake-body'
 // import Square from '../Game/square'
 import * as constants from '../helpers/constants'
+import { getDefaultState } from '../helpers/utility'
 
 export default class Game extends Component {
   constructor() {
     super()
-    this.state = {
-      playerState: [
-        { // first item is the head
-          top: constants.INDICES100[0],
-          left: constants.INDICES100[5],
-          direction: constants.RIGHT,
-          bodyIndex: 0,
-          turning: [] // direction, threshold
-        },
-        // 2nd body piece for testing
-        { // second piece (body)
-
-          top: constants.INDICES100[0],
-          left: constants.INDICES100[4],
-          direction: constants.RIGHT,
-          bodyIndex: 1,
-          turning: []
-        },
-        {
-          top: constants.INDICES100[0],
-          left: constants.INDICES100[3],
-          direction: constants.RIGHT,
-          bodyIndex: 2,
-          turning: []
-        }
-      ],
-      fruit: [{
-        top: constants.INDICES100[1],
-        left: constants.INDICES100[1],
-        timeStamp: 0,
-      }],
-      playerSpeed: 30,
-      paused: false,
-      score: 0,
-    }
+    this.state = getDefaultState();
   }
 
   componentDidMount() {
@@ -190,6 +157,43 @@ export default class Game extends Component {
   movePlayer = (bodyPiece, playerSpeed) => {
     const { direction: playerDirection } = bodyPiece
     const { top, left } = bodyPiece
+     // check walls
+     switch (playerDirection) {
+      case constants.UP:
+        // top - playerSpeed is where the player will be after moving
+        if (top - playerSpeed < 0) {
+          bodyPiece.top = 0;
+          this.endGame()
+          // exit function and don't move player
+          return bodyPiece
+        }
+        break
+      case constants.DOWN:
+        // - 100 because the position (top, left) is zero-indexed, but cell size is squares * 100
+        if (top + playerSpeed > constants.CELLSIZE100 - 100) {
+          bodyPiece.top = constants.CELLSIZE100 - 100;
+          this.endGame()
+          return bodyPiece
+        }
+        break
+      case constants.LEFT:
+        if (left - playerSpeed < 0) {
+          bodyPiece.left = 0;
+          this.endGame()
+          return bodyPiece
+        }
+        break
+      case constants.RIGHT:
+        if (left + playerSpeed > constants.CELLSIZE100 - 100) {
+          bodyPiece.left = constants.CELLSIZE100 - 100;
+          this.endGame()
+          return bodyPiece
+        }
+        break
+      default:
+        break
+    }
+
     switch (playerDirection) {
 
       case constants.UP:
@@ -208,37 +212,23 @@ export default class Game extends Component {
       default:
         break
     }
-    // check walls
-    switch (playerDirection) {
-      case constants.UP:
-        if (top < 0) bodyPiece.top = 0;
-        break
-      case constants.DOWN:
-        // - 100 because the position (top, left) is zero-indexed, but cell size is squares * 100
-        if (top > constants.CELLSIZE100 - 100) bodyPiece.top = constants.CELLSIZE100 - 100;
-        break
-      case constants.LEFT:
-        if (left < 0) bodyPiece.left = 0;
-        break
-      case constants.RIGHT:
-        if (left > constants.CELLSIZE100 - 100) bodyPiece.left = constants.CELLSIZE100 - 100;
-
-        break
-      default:
-        break
-    }
+   
     return bodyPiece
+  }
+
+  endGame = () => {
+    window.clearInterval(this.playerInterval)
   }
 
   checkForFruit = (playerState) => {
     let scoreIncrease = 0
     const updatedFruit = this.state.fruit.filter((fruitPiece, i) => {
-      const playerTop = Math.floor(playerState[0].top/100)
-      const playerLeft = Math.floor(playerState[0].left/100)
-      const fruitTop = fruitPiece.top/100
-      const fruitLeft = fruitPiece.left/100
+      const playerTop = Math.floor(playerState[0].top / 100)
+      const playerLeft = Math.floor(playerState[0].left / 100)
+      const fruitTop = fruitPiece.top / 100
+      const fruitLeft = fruitPiece.left / 100
       if (playerTop === fruitTop &&
-         playerLeft === fruitLeft) {
+        playerLeft === fruitLeft) {
         // increment score
         scoreIncrease = 1
         // ate fruit (disappears)
@@ -366,7 +356,7 @@ export default class Game extends Component {
     return (
       <div>
         <div>
-          <h1 style={{color: "white"}}>Score: {this.state.score}</h1>
+          <h1 style={{ color: "white" }}>Score: {this.state.score}</h1>
         </div>
         {snake}
         {fruit}
