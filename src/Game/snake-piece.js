@@ -7,7 +7,7 @@ const SnakePiece = (props) => {
     const topPixels = Y_VALUES_INSIDE[Math.floor(top/100)] + ((TOTAL_CELL_HEIGHT) * (top%100)/100)
     const leftPixels = X_VALUES_INSIDE[Math.floor(left/100)] + ((TOTAL_CELL_WIDTH) * (left%100)/100)
   
-    if (leftPixels < Y_OFFSET) console.log('$$$ less than y offset @@@');
+    if (topPixels < Y_OFFSET) console.log('$$$ less than y offset @@@');
     return (
       <Fragment>
         <Square

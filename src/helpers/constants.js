@@ -1,5 +1,5 @@
 
-export const FPS = 4
+export const FPS = 8
 export const INTERVAL = 1000 / FPS // how often game is updated in ms
 export const WINDOWWIDTH = 640
 export const WINDOWHEIGHT = 640 // pixels

@@ -40,8 +40,9 @@ export default class Game extends Component {
         left: constants.INDICES100[1],
         timeStamp: 0,
       }],
-      playerSpeed: 20,
+      playerSpeed: 30,
       paused: false,
+      score: 0,
     }
   }
 
@@ -69,7 +70,7 @@ export default class Game extends Component {
     const date = new Date()
     newFruit.timeStamp = Date.UTC()
     this.setState({
-      fruit: [ ...this.state.fruit, newFruit ]
+      fruit: [...this.state.fruit, newFruit]
     })
 
     // fruit disappears after random seconds between 10 and 20 sec
@@ -77,13 +78,13 @@ export default class Game extends Component {
   checkOccupiedSquares = () => {
     const top = constants.INDICES100[Math.floor(Math.random() * constants.INDICES100.length)]
     const left = constants.INDICES100[Math.floor(Math.random() * constants.INDICES100.length)]
-    const occupiedSquares = [ ...this.state.playerState, ...this.state.fruit ]
+    const occupiedSquares = [...this.state.playerState, ...this.state.fruit]
     for (let i = 0; i < occupiedSquares.length; i++) {
       const occupiedTop = occupiedSquares[i]
       const occupiedLeft = occupiedSquares[i]
       if (top === occupiedTop && left === occupiedLeft) return this.checkOccupiedSquares()
     }
-    return {top: top, left: left}
+    return { top: top, left: left }
   }
 
   updatePlayerPosition = () => {
@@ -95,14 +96,14 @@ export default class Game extends Component {
     let playerState = [...this.state.playerState].map((piece, i) => {
       if (piece.turning.length > 0) {
         console.log('turning');
-        
+
         let { direction: currentDirection } = piece
         const { threshold, direction: turningDirection } = piece.turning[0]
         const { top, left } = piece
         switch (currentDirection) {
           case constants.UP:
             // passed turning threshold?
-                        //threshold = 0
+            //threshold = 0
             // top = 10
             // speed = 20
             // next move top = -10
@@ -180,6 +181,7 @@ export default class Game extends Component {
 
       return bodyPiece
     })
+    this.checkForFruit(playerState);
     this.setState({
       playerState: playerState
     })
@@ -212,18 +214,43 @@ export default class Game extends Component {
         if (top < 0) bodyPiece.top = 0;
         break
       case constants.DOWN:
-        if (top > constants.CELLSIZE100 - 1) bodyPiece.top = constants.CELLSIZE100 - 1;
+        // - 100 because the position (top, left) is zero-indexed, but cell size is squares * 100
+        if (top > constants.CELLSIZE100 - 100) bodyPiece.top = constants.CELLSIZE100 - 100;
         break
       case constants.LEFT:
         if (left < 0) bodyPiece.left = 0;
         break
       case constants.RIGHT:
-        if (left > constants.CELLSIZE100 - 1) bodyPiece.left = constants.CELLSIZE100 - 1;
+        if (left > constants.CELLSIZE100 - 100) bodyPiece.left = constants.CELLSIZE100 - 100;
+
         break
       default:
         break
     }
     return bodyPiece
+  }
+
+  checkForFruit = (playerState) => {
+    let scoreIncrease = 0
+    const updatedFruit = this.state.fruit.filter((fruitPiece, i) => {
+      const playerTop = Math.floor(playerState[0].top/100)
+      const playerLeft = Math.floor(playerState[0].left/100)
+      const fruitTop = fruitPiece.top/100
+      const fruitLeft = fruitPiece.left/100
+      if (playerTop === fruitTop &&
+         playerLeft === fruitLeft) {
+        // increment score
+        scoreIncrease = 1
+        // ate fruit (disappears)
+        return false
+      }
+      // didn't eat the fruit
+      return true
+    })
+    this.setState({
+      score: this.state.score + scoreIncrease,
+      fruit: updatedFruit,
+    })
   }
 
   handlePlayerMovement = (newDirection) => {
@@ -328,16 +355,19 @@ export default class Game extends Component {
         left={piece.left}
       />
     )
-    const fruit = this.state.fruit.map((fruit, i) => 
+    const fruit = this.state.fruit.map((fruit, i) =>
       <Fruit key={i.toString()}
-      top={fruit.top}
-      left={fruit.left}
+        top={fruit.top}
+        left={fruit.left}
 
       />
     )
-    
+
     return (
       <div>
+        <div>
+          <h1 style={{color: "white"}}>Score: {this.state.score}</h1>
+        </div>
         {snake}
         {fruit}
         <Board />
