@@ -143,22 +143,25 @@ export default class Game extends Component {
     })
     const updatedPlayerState = playerState.map((bodyPiece) => {
       const { direction: playerDirection } = bodyPiece
-
       // bodyPiece = this.movePlayer(bodyPiece, playerSpeed)
-
       return bodyPiece
     })
     this.checkForFruit(playerState);
-    this.setState({
-      playerState: playerState
-    })
+    // Check if level is clear
+    if (this.state.fruitEatenThisLevel >= constants.NEXT_LEVEL_THRESHOLD) {
+      this.advanceLevel()
+    } else {
+      this.setState({
+        playerState: playerState
+      })
+    }
   }
 
   movePlayer = (bodyPiece, playerSpeed) => {
     const { direction: playerDirection } = bodyPiece
     const { top, left } = bodyPiece
-     // check walls
-     switch (playerDirection) {
+    // check walls
+    switch (playerDirection) {
       case constants.UP:
         // top - playerSpeed is where the player will be after moving
         if (top - playerSpeed < 0) {
@@ -212,8 +215,44 @@ export default class Game extends Component {
       default:
         break
     }
-   
+
     return bodyPiece
+  }
+
+  advanceLevel = () => {
+    // check if enough fruit eaten to get to next level
+    // add body piece
+    let nextPlayerState = []
+    const { snakeLength, playerSpeed } = this.state
+
+    for (let i = 0; i <= this.state.snakeLength; i++) {
+      const bodyPiece = {
+        top: constants.INDICES100[0],
+        left: constants.INDICES100[i],
+        direction: constants.RIGHT,
+        bodyIndex: 2,
+        turning: []
+      }
+      // snake head = higher value of i, at position 0
+      nextPlayerState.unshift(bodyPiece)
+    }
+    this.pause()
+    this.setState({
+      playerState: nextPlayerState,
+      message: true,
+      paused: false,
+      snakeLength: snakeLength + 1,
+      playerSpeed: playerSpeed + 10,
+      fruitEatenThisLevel: 0,
+    })
+
+    // Show next level message in App.js
+    this.props.showMessage("Ready, go!")
+    setTimeout(() => {
+      // clear message
+      this.props.clearMessage()
+      this.start()
+    }, 1000);
   }
 
   endGame = () => {
@@ -222,6 +261,7 @@ export default class Game extends Component {
 
   checkForFruit = (playerState) => {
     let scoreIncrease = 0
+    let updatedFruitEatenThisLevel = this.state.fruitEatenThisLevel
     const updatedFruit = this.state.fruit.filter((fruitPiece, i) => {
       const playerTop = Math.floor(playerState[0].top / 100)
       const playerLeft = Math.floor(playerState[0].left / 100)
@@ -229,8 +269,9 @@ export default class Game extends Component {
       const fruitLeft = fruitPiece.left / 100
       if (playerTop === fruitTop &&
         playerLeft === fruitLeft) {
-        // increment score
+        // increment score, fruitEatenThisLevel
         scoreIncrease = 1
+        updatedFruitEatenThisLevel++
         // ate fruit (disappears)
         return false
       }
@@ -240,6 +281,7 @@ export default class Game extends Component {
     this.setState({
       score: this.state.score + scoreIncrease,
       fruit: updatedFruit,
+      fruitEatenThisLevel: updatedFruitEatenThisLevel,
     })
   }
 
@@ -356,7 +398,7 @@ export default class Game extends Component {
     return (
       <div>
         <div>
-          <h1 style={{ color: "white" }}>Score: {this.state.score}</h1>
+          <h1 style={{ color: "white", marginLeft: constants.INFO_PANEL_MARGIN }}>Score: {this.state.score}</h1>
         </div>
         {snake}
         {fruit}

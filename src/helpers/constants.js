@@ -31,7 +31,7 @@ export const INDICES100 = Array(CELLSIZE).fill('').map((_, i) => {
   return i*100
 })
 
-
+export const INFO_PANEL_MARGIN = CELLSIZE * CELLWIDTH + X_OFFSET + 'px'
 
 export const WHITE = 'rgb(255, 255, 255)'
 
@@ -63,3 +63,5 @@ export const OPPOSITE_DIRECTIONS = {
   LEFT: RIGHT,
   RIGHT: LEFT,
 }
+
+export const NEXT_LEVEL_THRESHOLD = 1

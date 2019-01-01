@@ -10,8 +10,8 @@ export const getDefaultState = () => {
         bodyIndex: 0,
         turning: [] // direction, threshold
       },
-      // 2nd body piece for testing
-      { // second piece (body)
+      // 2nd body piece
+      {
 
         top: constants.INDICES100[0],
         left: constants.INDICES100[4],
@@ -19,13 +19,14 @@ export const getDefaultState = () => {
         bodyIndex: 1,
         turning: []
       },
-      {
-        top: constants.INDICES100[0],
-        left: constants.INDICES100[3],
-        direction: constants.RIGHT,
-        bodyIndex: 2,
-        turning: []
-      }
+      // 3rd body piece for testing
+      // {
+      //   top: constants.INDICES100[0],
+      //   left: constants.INDICES100[3],
+      //   direction: constants.RIGHT,
+      //   bodyIndex: 2,
+      //   turning: []
+      // }
     ],
     fruit: [{
       top: constants.INDICES100[1],
@@ -35,5 +36,8 @@ export const getDefaultState = () => {
     playerSpeed: 30,
     paused: false,
     score: 0,
+    snakeLength: 2,
+    fruitEatenThisLevel: 0,
+    message: false,
   }
 }
