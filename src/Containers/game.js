@@ -24,13 +24,17 @@ export default class Game extends Component {
     }, constants.INTERVAL);
 
     // place fruit
-    this.placeFruit()
+    const timeout = (Math.random() * 10000)
+    this.fruitTimeout = setTimeout(() => {
+      this.placeFruit()
+    }, timeout);
   }
 
   placeFruit = () => {
     // place new fruit in random location--push to array
     // Can't be in same location as other fruit or player
     // buffer around player?
+    const self = this;
 
     // loop through player locations and fruit and reassign if fruit top / left equal to these
     const newFruit = this.checkOccupiedSquares();
@@ -272,7 +276,12 @@ export default class Game extends Component {
         // increment score, fruitEatenThisLevel
         scoreIncrease = 1
         updatedFruitEatenThisLevel++
-        // ate fruit (disappears)
+        // place new fruit after random time 0-10 sec
+        const timeout = (Math.random() * 10000)
+        this.fruitTimeout = setTimeout(() => {
+          this.placeFruit()
+        }, timeout);
+        // ate fruit (fruit disappears)
         return false
       }
       // didn't eat the fruit

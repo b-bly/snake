@@ -64,4 +64,4 @@ export const OPPOSITE_DIRECTIONS = {
   RIGHT: LEFT,
 }
 
-export const NEXT_LEVEL_THRESHOLD = 1
+export const NEXT_LEVEL_THRESHOLD = 2
