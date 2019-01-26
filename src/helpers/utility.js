@@ -38,6 +38,7 @@ export const getDefaultState = () => {
     score: 0,
     snakeLength: 2,
     fruitEatenThisLevel: 0,
+    fruitValue: 1,
     message: false,
   }
 }

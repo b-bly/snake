@@ -4,6 +4,7 @@ import Message from '../Components/Message'
 import Board from '../Game/board'
 import SnakePiece from '../Game/snake-piece'
 import Fruit from '../Game/fruit'
+import RelativeSquare from '../Game/relative-square'
 // import SnakeBody from '../Game/snake-body'
 // import Square from '../Game/square'
 import * as constants from '../helpers/constants'
@@ -285,8 +286,7 @@ export default class Game extends Component {
       const fruitLeft = fruitPiece.left / 100
       if (playerTop === fruitTop &&
         playerLeft === fruitLeft) {
-        // increment score, fruitEatenThisLevel
-        scoreIncrease = 1
+        // increment fruitEatenThisLevel
         updatedFruitEatenThisLevel++
         // place new fruit after random time 0-10 sec
         const timeout = (Math.random() * 10000)
@@ -294,16 +294,22 @@ export default class Game extends Component {
           this.placeFruit()
         }, timeout);
         // ate fruit (fruit disappears)
+
         return false
       }
       // didn't eat the fruit
       return true
     })
-    this.setState({
-      score: this.state.score + scoreIncrease,
-      fruit: updatedFruit,
-      fruitEatenThisLevel: updatedFruitEatenThisLevel,
-    })
+    // update if fruit was eaten
+    if (updatedFruitEatenThisLevel > this.state.fruitEatenThisLevel) {
+      this.setState({
+        score: this.state.score + this.state.fruitValue,
+        fruit: updatedFruit,
+        fruitEatenThisLevel: updatedFruitEatenThisLevel,
+        fruitValue: this.state.fruitValue * 2,
+      })
+    }
+    
   }
 
   handlePlayerMovement = (newDirection) => {
@@ -419,38 +425,99 @@ export default class Game extends Component {
     })
   }
 
-    render() {
-      const snake = this.state.playerState.map((piece, i) =>
-        <SnakePiece
-          key={i.toString()}
-          top={piece.top}
-          left={piece.left}
-        />
-      )
-      const fruit = this.state.fruit.map((fruit, i) =>
-        <Fruit key={i.toString()}
-          top={fruit.top}
-          left={fruit.left}
+  render() {
+    const snake = this.state.playerState.map((piece, i) =>
+      <SnakePiece
+        key={i.toString()}
+        top={piece.top}
+        left={piece.left}
+      />
+    )
+    const fruit = this.state.fruit.map((fruit, i) =>
+      <Fruit key={i.toString()}
+        top={fruit.top}
+        left={fruit.left}
 
-        />
-      )
+      />
+    )
 
-      return (
-        <div>
-          {this.state.message && (
-            <Message
-              message={this.state.message}
-              playAgainButton={this.state.playAgainButton}
-              playAgain={this.playAgain.bind(this)} />
-          )}
-          <div>
-            <h1 style={{ color: "white", marginLeft: constants.INFO_PANEL_MARGIN }}>Score: {this.state.score}</h1>
-          </div>
-          {snake}
-          {fruit}
-          <Board />
-
-        </div>
-      )
+    const score = {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      flex: '0 1 auto',
+      marginLeft: '10px',
+      padding: '5px',
+      marginTop: constants.Y_OFFSET,
+      border: '4px solid white',
+      borderRadius: '4px',
     }
+
+
+    const row = {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      flexFlow: 'row reverse-wrap',
+      width: '100%',
+    }
+
+    const scoreRow = {
+      ...row,
+      alignItems: 'center'
+    }
+
+    const board = {
+      marginLeft: '50px',
+      position: 'relative',
+      width: constants.WINDOWWIDTH,
+    }
+
+    const scoreText = {
+      color: "white",
+      fontSize: "20px",
+      margin: '5px 0'
+    }
+
+    const fruitText = {
+      ...scoreText,
+      marginLeft: '10px'
+    }
+
+    return (
+      <div>
+        {this.state.message && (
+          <Message
+            message={this.state.message}
+            playAgainButton={this.state.playAgainButton}
+            playAgain={this.playAgain.bind(this)} />
+        )}
+
+        <div className="row" style={row}>
+          <div className="board" style={board}>
+            {snake}
+            {fruit}
+            <Board />
+          </div>
+          <div className="score" style={score}>
+            <h2 style={scoreText}>
+              Score: {this.state.score}
+            </h2>
+
+            <div style={scoreRow}>
+              <RelativeSquare
+                backgroundColor={constants.GREEN}
+              />
+              <h2 style={fruitText}>
+                {this.state.fruitValue} { this.state.fruitValue > 1 ?
+                  <span>points</span>
+                  :
+                  <span>point</span>
+                }
+                </h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
+}
