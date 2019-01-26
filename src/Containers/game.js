@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+// components
+import Message from '../Components/Message'
 import Board from '../Game/board'
 import SnakePiece from '../Game/snake-piece'
 import Fruit from '../Game/fruit'
@@ -16,6 +18,14 @@ export default class Game extends Component {
   componentDidMount() {
     this.start()
     window.onkeydown = this.handleKeyDown
+  }
+
+  componentDidUpdate() {
+    if (this.props.start === true) {
+      this.start();
+      console.log('component did update!');
+
+    }
   }
 
   start = () => {
@@ -251,16 +261,18 @@ export default class Game extends Component {
     })
 
     // Show next level message in App.js
-    this.props.showMessage("Ready, go!")
+    this.showMessage("Ready, go!", null)
     setTimeout(() => {
       // clear message
-      this.props.clearMessage()
+      this.clearMessage()
       this.start()
     }, 1000);
   }
 
   endGame = () => {
     window.clearInterval(this.playerInterval)
+    window.clearTimeout(this.fruitTimeout)
+    this.showMessage("Game Over", true)
   }
 
   checkForFruit = (playerState) => {
@@ -388,32 +400,57 @@ export default class Game extends Component {
     }
   }
 
-  render() {
-    const snake = this.state.playerState.map((piece, i) =>
-      <SnakePiece
-        key={i.toString()}
-        top={piece.top}
-        left={piece.left}
-      />
-    )
-    const fruit = this.state.fruit.map((fruit, i) =>
-      <Fruit key={i.toString()}
-        top={fruit.top}
-        left={fruit.left}
-
-      />
-    )
-
-    return (
-      <div>
-        <div>
-          <h1 style={{ color: "white", marginLeft: constants.INFO_PANEL_MARGIN }}>Score: {this.state.score}</h1>
-        </div>
-        {snake}
-        {fruit}
-        <Board />
-
-      </div>
-    )
+  showMessage = (message, playAgain) => {
+    this.setState({
+      message: message,
+      playAgain: playAgain
+    })
   }
-}
+
+  clearMessage = () => {
+    this.setState({
+      message: null
+    })
+  }
+
+  playAgain = () => {
+    this.setState(getDefaultState(), () => {
+      this.start();
+    })
+  }
+
+    render() {
+      const snake = this.state.playerState.map((piece, i) =>
+        <SnakePiece
+          key={i.toString()}
+          top={piece.top}
+          left={piece.left}
+        />
+      )
+      const fruit = this.state.fruit.map((fruit, i) =>
+        <Fruit key={i.toString()}
+          top={fruit.top}
+          left={fruit.left}
+
+        />
+      )
+
+      return (
+        <div>
+          {this.state.message && (
+            <Message
+              message={this.state.message}
+              playAgainButton={this.state.playAgainButton}
+              playAgain={this.playAgain.bind(this)} />
+          )}
+          <div>
+            <h1 style={{ color: "white", marginLeft: constants.INFO_PANEL_MARGIN }}>Score: {this.state.score}</h1>
+          </div>
+          {snake}
+          {fruit}
+          <Board />
+
+        </div>
+      )
+    }
+  }
