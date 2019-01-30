@@ -9,6 +9,7 @@ import RelativeSquare from '../Game/relative-square'
 // import Square from '../Game/square'
 import * as constants from '../helpers/constants'
 import { getDefaultState } from '../helpers/utility'
+import { score, row, scoreRow, board, scoreText, fruitText } from '../helpers/style'
 
 export default class Game extends Component {
   constructor() {
@@ -440,48 +441,6 @@ export default class Game extends Component {
 
       />
     )
-
-    const score = {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      flex: '0 1 auto',
-      marginLeft: '10px',
-      padding: '5px',
-      marginTop: constants.Y_OFFSET,
-      border: '4px solid white',
-      borderRadius: '4px',
-    }
-
-
-    const row = {
-      display: 'flex',
-      justifyContent: 'flex-start',
-      flexFlow: 'row reverse-wrap',
-      width: '100%',
-    }
-
-    const scoreRow = {
-      ...row,
-      alignItems: 'center'
-    }
-
-    const board = {
-      marginLeft: '50px',
-      position: 'relative',
-      width: constants.WINDOWWIDTH,
-    }
-
-    const scoreText = {
-      color: "white",
-      fontSize: "20px",
-      margin: '5px 0'
-    }
-
-    const fruitText = {
-      ...scoreText,
-      marginLeft: '10px'
-    }
 
     return (
       <div>
