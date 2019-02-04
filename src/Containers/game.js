@@ -263,7 +263,7 @@ export default class Game extends Component {
     })
 
     // Show next level message in App.js
-    this.showMessage("Ready, go!", null)
+    this.showMessage("Ready, go!", false)
     setTimeout(() => {
       // clear message
       this.clearMessage()
@@ -407,16 +407,17 @@ export default class Game extends Component {
     }
   }
 
-  showMessage = (message, playAgain) => {
+  showMessage = (message, playAgainButton) => {
     this.setState({
       message: message,
-      playAgain: playAgain
+      playAgainButton: playAgainButton
     })
   }
 
   clearMessage = () => {
     this.setState({
-      message: null
+      message: null,
+      playAgainButton: false,
     })
   }
 

@@ -28,17 +28,20 @@ export const getDefaultState = () => {
       //   turning: []
       // }
     ],
-    fruit: [{
+    fruit: [
+      {
       top: constants.INDICES100[1],
       left: constants.INDICES100[1],
       timeStamp: 0,
-    }],
+    }
+  ],
     playerSpeed: 30,
     paused: false,
     score: 0,
     snakeLength: 2,
-    fruitEatenThisLevel: 0,
+    fruitEatenThisLevel: 1,
     fruitValue: 1,
     message: false,
+    playAgainButton: false,
   }
 }

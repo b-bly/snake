@@ -37,10 +37,8 @@ const modalContent = {
   color: 'white',
 
   padding: '20px', // max-width: 750px;
-  width: '600px',
   maxWidth: '750px',
   fontSize: '30px'
-
 }
 // Component
 
@@ -52,7 +50,7 @@ const Message = (props) =>
           {props.message}
         </div>
         <div>
-          {props.playAgain && (
+          {props.playAgainButton === true && (
             <button className="btn btn-success message-margin"
               onClick={props.playAgain}
             >Play Again</button>
