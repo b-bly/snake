@@ -7,15 +7,16 @@ export const score = {
   flex: '0 1 auto',
   marginLeft: '10px',
   padding: '5px',
-  marginTop: constants.Y_OFFSET,
+  margin: 'auto 5px',
   border: '4px solid white',
   borderRadius: '4px',
+  minWidth: '135px'
 }
 
 
 export const row = {
   display: 'flex',
-  justifyContent: 'flex-start',
+  justifyContent: 'center',
   flexFlow: 'row reverse-wrap',
   width: '100%',
 }
@@ -26,9 +27,11 @@ export const scoreRow = {
 }
 
 export const board = {
-  marginLeft: '50px',
+  marginTop: '50px',
   position: 'relative',
-  width: constants.WINDOWWIDTH,
+  width: constants.WINDOWWIDTH + 'px',
+  height: constants.WINDOWHEIGHT + 'px',
+  border: '2px solid gray'
 }
 
 export const scoreText = {

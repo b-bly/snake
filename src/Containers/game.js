@@ -262,10 +262,8 @@ export default class Game extends Component {
       fruitEatenThisLevel: 0,
     })
 
-    // Show next level message in App.js
-    this.showMessage("Ready, go!", false)
+    this.showMessage("Ready, go!", false);
     setTimeout(() => {
-      // clear message
       this.clearMessage()
       this.start()
     }, 1000);
@@ -310,7 +308,6 @@ export default class Game extends Component {
         fruitValue: this.state.fruitValue * 2,
       })
     }
-    
   }
 
   handlePlayerMovement = (newDirection) => {
@@ -468,12 +465,12 @@ export default class Game extends Component {
                 backgroundColor={constants.GREEN}
               />
               <h2 style={fruitText}>
-                {this.state.fruitValue} { this.state.fruitValue > 1 ?
+                {this.state.fruitValue} {this.state.fruitValue > 1 ?
                   <span>points</span>
                   :
                   <span>point</span>
                 }
-                </h2>
+              </h2>
             </div>
           </div>
         </div>

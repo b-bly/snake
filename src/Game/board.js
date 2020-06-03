@@ -17,7 +17,7 @@ const Board = () => {
             top={i * constants.CELLHEIGHT + constants.Y_OFFSET}
             left={j * constants.CELLWIDTH + constants.X_OFFSET}
             zIndex='0'
-            border={true}
+            border={false}
           />
         )
       })
